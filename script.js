@@ -7,6 +7,8 @@ const timer = document.getElementById('timer')
 let time = 0
 let timerActive = false
 let timerRef = null
+const pomodoroInterval = 55 * 60
+let pomodoroTimer = pomodoroInterval
 let pomodoroRef = null
 let tasks = []
 
@@ -95,16 +97,19 @@ startBtn.addEventListener('click', () => {
     // start timer
     timerRef = setInterval(() => {
       const timeStr = secondsToTimeStr(time)
+      const pomodoroStr = secondsToTimeStr(pomodoroTimer)
       timer.innerText = timeStr
-      document.title = timeStr
       time++
+      pomodoroTimer--
+      if (pomodoroTimer === 0) {
+        new Notification('Pomodoro done!')
+        pomodoroTimer = pomodoroInterval
+      }
+      document.title = pomodoroStr
     }, 1000)
     startBtn.innerText = 'Stop'
 
     timerActive = true
-    
-    // start pomodoro
-    pomodoroRef = setInterval(() => alert('take a break!'), 50 * 60 * 1000)
   }
 })
 
@@ -115,5 +120,16 @@ taskSelector.addEventListener('change', () => {
   timer.innerText = timeStr
   document.title = timeStr
 })
+
+if (Notification.permission === 'default') {
+  if (!('Notification' in window)) {
+    console.log('This browser does not support notifications')
+  } else {
+    Notification.requestPermission()
+      .then(permission => {
+        Notification.permission = permission
+      })
+  }
+}
 
 selectorInit()
