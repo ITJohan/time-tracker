@@ -76,6 +76,7 @@ startBtn.addEventListener('click', () => {
     clearInterval(pomodoroRef)
     startBtn.innerText = 'Start'
     timerActive = false
+    pomodoroTimer = pomodoroInterval
 
     // add to storage
     const tasksStr = localStorage.getItem('time-tracker')
